@@ -25,7 +25,7 @@ A link will be provided for you to create your Azure lab environment with all th
   
   ![Lab Resource Group](../Media/labenv1.png)
   
-   * Provisioning only created a Azure SQL server endpoint as shown in the image above. We need to create the Azure Synapse (data warehouse) for the next step of this lab. If your Azure lab environment has a Azure SQL data warehouse included please skip to step 5.
+   * Provisioning creates a Azure SQL server endpoint and the Azure Data Warehouse as shown in the image above. If the Azure Data Warehouse is **not avaliable** in your lab environment create the Azure Synapse (data warehouse) for this lab. If your Azure lab environment has a Azure SQL data warehouse included please **skip to step 5**.
    
    * In the **ODL-sql-dw-NNNNN** resource group click the **labsqlNNNNNN** SQL Server service. From the **labsqlNNNNNN** SQL Server service **Overview** click the **New data warehouse** link to create a new Azure Synapse warehouse.
   
