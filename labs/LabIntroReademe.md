@@ -46,7 +46,7 @@ A link will be provided for you to create your Azure lab environment with all th
    * This will add your client IP address to the firewall so you can use client tools on your laptop to access your Azure SQL Server.
    
 6.	Access Key
-Click on 'All resources' and select the gen1 storage account from the list (it starts with the name 'labsql) 
+Click on 'All resources' and select the Azure storage account from the list (it starts with the name 'labsql) 
 Click on 'Access Keys' and note down the storage account name and access key details 
 
 7.	Open SQL Server Management Studio on your laptop and connect to your SQLDW instance using the credentials provided during the sign-up.
