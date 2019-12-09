@@ -37,7 +37,7 @@ A link will be provided for you to create your Azure lab environment with all th
   
   * Click Next: Review + create > button and the click then **Create** button to create the Azure Synapse (data warehouse).
   
-  * After the Azure Synapse (data warehouse) is created, select your SQL Data Warehouse (AdventureWorksDW) service and go to overview. The Azure Synapse (data warehouse) should be running. If its paused, Click on **'Resume'** to start your SQL DW instance.
+  * After the data warehouse is created, select your SQL Data Warehouse (AdventureWorksDW) service and go to overview. The Azure Synapse (data warehouse) should be running. If its paused, Click on **'Resume'** to start your SQL DW instance.
   
 5. Configure SQL Server Firewall Settings
    * Click on the SQL Server name 
