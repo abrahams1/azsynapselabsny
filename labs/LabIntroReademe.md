@@ -34,3 +34,16 @@ A link will be provided for you to create your Azure lab environment with all th
   * Enter the data warehouse name **AdventureWorksDW** and click the **Next: Additional settings >>** button. Under Additional Settings -> Data Sources -> **Use existing data** select the **sample** and click **Next: Tags** button.
   
   ![Lab Resource Group](../Media/dwprov2.png)
+  
+  * Click Next: Review + create > button and the click then **Create** button to create the Azure Synapse (data warehouse).
+  
+  * After the Azure Synapse (data warehouse) is created, select your SQL Data Warehouse (AdventureWorksDW) service and go to overview. The Azure Synapse (data warehouse) should be running. If its paused, Click on ‘Resume’ to start your SQL DW instance.
+  
+5. Configure SQL Server Firewall Settings
+   * Click on the SQL Server name 
+   * Click on 'Show Firewall Settings' 
+   * Click on 'Add Client IP’ and click 'Save'
+   * This will add your client IP address to the firewall so you can use client tools on your laptop to access your Azure SQL Server.
+   
+6.  
+
