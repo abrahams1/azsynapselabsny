@@ -8,9 +8,9 @@ The dataset you’ll be working with is weather data from the National Oceanic a
 1.	Create your Azure lab environment
 A link will be provided for you to create your Azure lab environment with all the necessary services. Please note that the environment is available for 10-12 hours since the time you sign up for it. Once the environment has been created, you will be presented with the login credentials to Azure portal and other relevant details. Record these details in a safe location.
 
-  Sign-up link | **Please ask your instructor for the sign-up link**
-  ------------ | -------------
-  Activation Code | **Please ask your instructor**
+  Sign-up link | http://bit.ly/35NfQ7E  | **Please ask your instructor for the sign-up link**
+  ------------ | ------------- | -------------
+  Activation Code | ACTIVATE5027 | **Please ask your instructor**
 
 
 
