@@ -20,3 +20,6 @@ Microsoft recently announced Azure Synapse Analytics as the evolution of Azure S
   * Lab 2 - https://github.com/abrahams1/azsynapselabsny/blob/master/labs/Lab2.pdf
 4. Start Lab 3:
   * https://github.com/abrahams1/azsynapselabsny/blob/master/labs/Lab3.pdf
+  
+  Azure Synapse Private preview sign up:
+  * https://azure.microsoft.com/en-us/services/synapse-analytics/request-for-private-preview/
