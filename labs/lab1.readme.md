@@ -1,40 +1,40 @@
-# SQL DW Data Loading Scenarios and Best Practices
+## SQL DW Data Loading Scenarios and Best Practices
 
-# (ADW In-A-Day Lab 01)
+## (ADW In-A-Day Lab 01)
 
-# Contents
+## Contents
 
-## SQL DW Data Loading Scenarios and Best Practices..................................................................................... 1
+### SQL DW Data Loading Scenarios and Best Practices 1
 
-## (ADW In-A-Day Lab 01) ................................................................................................................................. 1
+### (ADW In-A-Day Lab 01)  1
 
-## Overview ................................................................................................................................................... 1
+### Overview  1
 
-## Pre-requisites: ........................................................................................................................................... 1
+### Pre-requisites:  1
 
-## Create your loading objects ...................................................................................................................... 2
+## Create your loading objects  2
 
-## Connect to your SQL Data Warehouse as loading user ............................................................................ 3
+## Connect to your SQL Data Warehouse as loading user  3
 
-## Impact of file format on loading ............................................................................................................... 4
+## Impact of file format on loading 4
 
-## Delimited Text ....................................................................................................................................... 4
+## Delimited Text  4
 
-## Parquet .................................................................................................................................................. 6
+## Parquet  6
 
-## GZIP Compressed Delimited Text ......................................................................................................... 7
+## GZIP Compressed Delimited Text  7
 
-## Impact of Single File Compression ............................................................................................................ 9
+## Impact of Single File Compression  9
 
-## Impact of Table Distribution on loading ................................................................................................. 10
+## Impact of Table Distribution on loading  10
 
-## Let’s take a look again at the DMVs and compare our load speeds ....................................................... 12
+## Let’s take a look again at the DMVs and compare our load speeds  12
 
-## Impact of CTAS vs Insert into Select ....................................................................................................... 12
+## Impact of CTAS vs Insert into Select  12
 
-## Closing ..................................................................................................................................................... 13
+## Closing  13
 
-## Side Bar: Simplified loading experience with COPY Command (out soon) ............................................. 13
+## Side Bar: Simplified loading experience with COPY Command (out soon)  13
 
 ## Overview
 
@@ -85,7 +85,7 @@
 ###### CREATE MASTER KEY
 
 ###### GO
-
+````
 CREATE DATABASE SCOPED CREDENTIAL Ready
 WITH IDENTITY = 'mas',
 SECRET = ‘<Access key for your storage account>’
@@ -110,7 +110,8 @@ FIELD_TERMINATOR = '|'
 )
 )
 
-##### GO
+GO
+````
 
 ##### The next thing that we need to do is create an external table over the files so that we can access the
 
@@ -120,7 +121,7 @@ FIELD_TERMINATOR = '|'
 
 ##### Execute the following TSQL to create an external table:
 
-
+````
 CREATE SCHEMA staging;
 GO
 
@@ -139,8 +140,9 @@ DATA_SOURCE = [Ready_store],
 LOCATION = N'loading/factWeatherMeasurements/Text_files',
 FILE_FORMAT = [TextFileFormat_Ready],
 REJECT_TYPE = VALUE,
+REJECT_VALUE = 0 )
 
-##### REJECT_VALUE = 0 )
+````
 
 ### Connect to your SQL Data Warehouse as loading user
 
@@ -216,6 +218,7 @@ REJECT_TYPE = VALUE,
 
 ##### Let’s load some data!
 
+````
 CREATE TABLE [staging].[STG_text_load]
 WITH
 (
@@ -225,11 +228,13 @@ HEAP
 AS
 SELECT * FROM [staging].[STG_factWeatherMeasurements_text] option(label =
 'STG_text_load')
+````
 
 ##### While this is running you can view the steps with the Dynamic Management Views (DMVs)
 
 ##### Open another Query windows as admin user and execute
 
+````
 SELECT s.*
 FROM
 sys.dm_pdw_exec_requests r
@@ -237,7 +242,7 @@ JOIN
 Sys.dm_pdw_request_steps s
 ON r.request_id = s.request_id
 WHERE r.[label] = 'STG_text_load'
-
+````
 ##### You’ll probably notice that the operation is in the HadoopRoundRobinOperation operation_type for
 
 ##### quite a while. This is the operation the reads the files from the data source into SQL DW. Notice that this
@@ -249,7 +254,7 @@ WHERE r.[label] = 'STG_text_load'
 ##### sources into SQL DW.
 
 ##### We can see more detailed information about what is happening in this step with the following.
-
+````
 SELECT ew.*
 FROM[sys].[dm_pdw_dms_external_work] ew
 
@@ -259,7 +264,7 @@ ON r.request_id = ew.request_id
 JOIN Sys.dm_pdw_request_steps s
 ON r.request_id = s.request_id
 WHERE r.[label] = 'STG_text_load'
-
+````
 ##### ORDER BY input_name, read_location
 
 ##### This is particularly interesting because it shows how we effectively load uncompressed Delimited Text
@@ -273,7 +278,7 @@ WHERE r.[label] = 'STG_text_load'
 ##### For Parquet, let’s kick off the code and then talk about what’s happening while the data loads.
 
 ##### Execute the following statements as admin user (sqladmin)
-
+````
 CREATE EXTERNAL FILE FORMAT [Parquet] WITH (FORMAT_TYPE = PARQUET)
 GO
 
@@ -294,9 +299,11 @@ FILE_FORMAT = [Parquet],
 REJECT_TYPE = VALUE,
 REJECT_VALUE = 0 )
 GO
+````
 
 ##### Execute the following CTAS as load user ( usgsLoader )
 
+````
 CREATE TABLE [staging].[STG_parquet_load]
 WITH
 (
@@ -308,7 +315,7 @@ SELECT *
 FROM [staging].[STG_factWeatherMeasurements_parquet]
 OPTION (label = 'STG_parquet_load')
 GO
-
+````
 ##### The first thing that we did above was create a new External File Format named Parquet. Notice that this
 
 ##### didn’t require a lot of information because the Parquet file format is predefined unlike delimited text.
@@ -322,6 +329,7 @@ GO
 
 ##### Let’s take a look at the DMVs again to see what happens with Parquet load.
 
+````
 SELECT DISTINCT ew.*
 FROM[sys].[dm_pdw_dms_external_work] ew
 JOIN sys.dm_pdw_exec_requests r
@@ -330,6 +338,7 @@ JOIN Sys.dm_pdw_request_steps s
 ON r.request_id = s.request_id
 WHERE r.[label] = 'STG_parquet_load'
 ORDER BY start_time ASC, dms_step_index
+````
 
 ##### Parquet is not split-able today in SQL DW. This is shown by each file only appearing once. Also, notice
 
@@ -343,6 +352,7 @@ ORDER BY start_time ASC, dms_step_index
 
 ##### As admin user:
 
+````
 CREATE EXTERNAL FILE FORMAT compressed_TextFileFormat_Ready
 WITH
 (
@@ -353,12 +363,10 @@ FIELD_TERMINATOR = '|'
 ), DATA_COMPRESSION = N'org.apache.hadoop.io.compress.GzipCodec'
 )
 GO
-
+````
+````
 CREATE EXTERNAL TABLE [staging].[STG_factWeatherMeasurements_CompressedText]
-
-
-###### (
-
+(
 [SiteName] [varchar]( 52 ) NOT NULL,
 [ReadinType] [varchar]( 52 ) NOT NULL,
 [ReadingTypeID] [real] NOT NULL,
@@ -376,8 +384,11 @@ REJECT_TYPE = VALUE,
 REJECT_VALUE = 0
 )
 GO
+````
 
 **As load user (usgsLoader)**
+
+````
 CREATE TABLE [staging].[STG_compressed_text_load]
 WITH
 (
@@ -389,6 +400,7 @@ SELECT *
 FROM [staging].[STG_factWeatherMeasurements_CompressedText]
 OPTION (label = 'STG_compressed_text_load')
 GO
+````
 
 ##### Again, you will notice that SQL DW does not split GZIP compressed files. This is because the compression
 
@@ -398,14 +410,14 @@ GO
 
 ##### the CTAS is completed before you execute the statement below)
 
+````
 SELECT AVG(total_elapsed_time) AS [avg_loadTime_ms], [label]
 FROM sys.dm_pdw_exec_requests
 WHERE [label] IS NOT NULL
 AND [label] <> 'System'
-
-
 AND Status = 'Completed'
 GROUP BY [label]
+````
 
 ##### avg_loadTime_ms label
 
@@ -434,6 +446,7 @@ GROUP BY [label]
 ##### Let’s take the same data and try to load it from a single compressed Gzip file.
 
 **As admin user (sqladmin)**
+````
 CREATE EXTERNAL TABLE [staging].[STG_factWeatherMeasurements_CompressedText_single_file]
 (
 [SiteName] [varchar]( 52 ) NOT NULL,
@@ -452,8 +465,9 @@ FILE_FORMAT = [compressed_TextFileFormat_Ready],
 REJECT_TYPE = VALUE,
 REJECT_VALUE = 0 )
 GO
-
+````
 **As loading user (usgsloader)**
+````
 CREATE TABLE [staging].[STG_CompressedText_single_file]
 WITH
 (
@@ -464,8 +478,8 @@ SELECT *
 FROM [staging].[STG_factWeatherMeasurements_CompressedText_single_file]
 OPTION(label = 'STG_single_compressed_load')
 
-
-##### GO
+GO
+````
 
 ##### You’ve probably notice that this is taking quite a bit a time. While the load is running, we would like for
 
@@ -499,6 +513,7 @@ OPTION(label = 'STG_single_compressed_load')
 
 ##### Let’s suppose that we wanted to load that same data again but hash the data on the readingUnit column
 
+````
 CREATE TABLE [staging].[STG_Hash_ReadingUnit]
 WITH
 (
@@ -511,13 +526,15 @@ FROM [staging].[STG_factWeatherMeasurements_CompressedText]
 OPTION (label = 'STG_Hash_ReadingUnit')
 
 
-##### While this is running, run the following in another query window as admin user (sqldmin):
+-- While this is running, run the following in another query window as admin user (sqldmin):
 
 Select *
 FROM sys.dm_pdw_dms_workers dw
 JOIN sys.dm_pdw_exec_requests r
 ON r.request_id = dw.request_id
 WHERE r.[label] = 'STG_Hash_ReadingUnit'
+
+````
 
 ##### This shows how the data is being read from files, how that data is being converted to SQL data type
 
@@ -586,14 +603,14 @@ WHERE r.[label] = 'STG_Hash_ReadingUnit'
 ### Let’s take a look again at the DMVs and compare our load speeds
 
 ##### Execute the following query as admin user (wait until the previous load is completed):
-
+````
 Select avg(total_elapsed_time) as [avg_loadTime_ms], [label]
 FROM sys.dm_pdw_exec_requests
 where [label] is not null
 and [label] <> 'System'
 and Status = 'Completed'
-
-## GROUP BY [label] order by 1 desc
+GROUP BY [label] order by 1 desc
+````
 
 ##### avg_loadTime_ms label
 
@@ -621,6 +638,7 @@ and Status = 'Completed'
 
 ##### statements lets focus on INSERT INTO SELECT and compare.
 
+````
 CREATE TABLE [staging].[STG_factWeatherMeasurements_Insert_Into]
 (
 [SiteName] [varchar]( 52 ) NOT NULL,
@@ -637,7 +655,8 @@ DISTRIBUTION = ROUND_ROBIN,
 HEAP
 )
 GO
-
+````
+````
 INSERT INTO [staging].[STG_factWeatherMeasurements_Insert_Into] SELECT * FROM
 [staging].[STG_factWeatherMeasurements_text] option (label = 'STG_insertInto')
 GO
@@ -648,16 +667,16 @@ INSERT INTO [staging].[STG_factWeatherMeasurements_Insert_Into]
 SELECT * FROM [staging].[STG_factWeatherMeasurements_text] option (label =
 'STG_insertInto_two')
 GO
-
+````
 ##### Wait until the above inserts are completed and execute the following query as admin user:
-
+````
 SELECT avg(total_elapsed_time) as [avg_loadTime_ms], [label]
 FROM sys.dm_pdw_exec_requests
 WHERE [label] is not null
 and [label] <> 'System'
 and Status = 'Completed'
-
-##### GROUP BY [label] ORDER BY 1 DESC
+GROUP BY [label] ORDER BY 1 DESC
+````
 
 ##### As you can see CTAS is slightly faster (~10%) than writing directly into a table via insert into select, but
 
