@@ -12,64 +12,51 @@
 
 ### Pre-requisites:  1
 
-## Create your loading objects  2
+### Create your loading objects  2
 
-## Connect to your SQL Data Warehouse as loading user  3
+### Connect to your SQL Data Warehouse as loading user  3
 
-## Impact of file format on loading 4
+### Impact of file format on loading 4
 
-## Delimited Text  4
+### Delimited Text  4
 
-## Parquet  6
+### Parquet  6
 
-## GZIP Compressed Delimited Text  7
+### GZIP Compressed Delimited Text  7
 
-## Impact of Single File Compression  9
+### Impact of Single File Compression  9
 
-## Impact of Table Distribution on loading  10
+### Impact of Table Distribution on loading  10
 
-## Let’s take a look again at the DMVs and compare our load speeds  12
+### Let’s take a look again at the DMVs and compare our load speeds  12
 
-## Impact of CTAS vs Insert into Select  12
+### Impact of CTAS vs Insert into Select  12
 
-## Closing  13
+### Closing  13
 
-## Side Bar: Simplified loading experience with COPY Command (out soon)  13
+### Side Bar: Simplified loading experience with COPY Command (out soon)  13
 
 ## Overview
 
-## This module will go over the internals of loading data with PolyBase and provide a deeper understanding
+This module will go over the internals of loading data with PolyBase and provide a deeper understanding of factors that can impact loading performance.
+To simplify this experience, the entire lab is conducted using SSMS and T-SQL. In the real world, you would automate everything that you see in this lab with a tool like Azure Data Factory, SSIS, or another 3 rd party tool; however, the learnings presented here are still valuable as you move into production scenarios.
 
-## of factors that can impact loading performance.
+### Pre-requisites:
 
-## To simplify this experience, the entire lab is conducted using SSMS and T-SQL. In the real world, you
+* Existing Azure SQL Data Warehouse
 
-## would automate everything that you see in this lab with a tool like Azure Data Factory, SSIS, or another
+* Existing Azure Storage Instance with datasets
 
-## 3 rd party tool; however, the learnings presented here are still valuable as you move into production
-
-## scenarios.
-
-## Pre-requisites:
-
-## • Existing Azure SQL Data Warehouse
-
-## • Existing Azure Storage Instance with datasets
-
-## • Azure subscription
+* Azure subscription
 
 
-- SQL USER in SQL DW with CONTROL Permissions
+##### SQL USER in SQL DW with CONTROL Permissions
 
-### Create your loading objects
+#### Create your loading objects
 
-##### When loading data into SQL DW it is a best practice to use PolyBase. PolyBase allows you to load files
+When loading data into SQL DW it is a best practice to use PolyBase. PolyBase allows you to load files (Delimited Text, ORC, RC, and Parquet) from Azure Blob Storage, Azure Data Lake Store and Azure Data Lake Store Gen2.
 
-##### (Delimited Text, ORC, RC, and Parquet) from Azure Blob Storage, Azure Data Lake Store and Azure Data
-
-##### Lake Store Gen2.
-
-##### To use PolyBase there are four objects that must be created:
+To use PolyBase there are four objects that must be created:
 
 - **Database Scoped Credential** – Credential used to authenticate to External Data Source.
 - **External Data Source** – Describes where the data is located at a coarse grain.
@@ -82,10 +69,11 @@
 
 ##### Execute the following TSQLs as admin user (sqladmin)
 
-###### CREATE MASTER KEY
-
-###### GO
 ````
+CREATE MASTER KEY
+
+GO
+
 CREATE DATABASE SCOPED CREDENTIAL Ready
 WITH IDENTITY = 'mas',
 SECRET = ‘<Access key for your storage account>’
