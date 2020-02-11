@@ -1,4 +1,4 @@
-# Analytics in a Day - Azure Synapse (DW) Workshop
+# Azure Synapse Analytics in a Day - Workshop
 
 Analytics in a Day is Azure Synapse (DW) focused workshop derived from the original Analytics in a Day workshop with technical labs for the modern data warehouse inside Azure Synapse platform. In this workshop you will learn about the main concepts related to Azure Synapse data warehouse pool. You will work on a series of lab modules that teach you best practices for getting the most out of your Azure Synapse. These modules cover the entire lifecycle of data in your Azure Synapse (DW) from loading, to securing, querying, and optimizing the data.
 
